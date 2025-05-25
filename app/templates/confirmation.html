@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Quote Started{% endblock %}
+
+{% block content %}
+  <div class="alert alert-success">
+    <strong>Success!</strong> Quote started for client: <strong>{{ client }}</strong>.
+  </div>
+  <p>You can now add project types, costs, and export the quote.</p>
+{% endblock %}
+

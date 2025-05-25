@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Start a Quote{% endblock %}
+
+{% block content %}
+  <h1 class="mb-4">Start a New Quote</h1>
+
+  <form method="POST" class="row g-3">
+    <div class="col-md-6">
+      <label for="client_name" class="form-label">Client Name</label>
+      <input type="text" name="client_name" class="form-control" required>
+    </div>
+
+    <div class="col-md-6">
+      <label for="project_name" class="form-label">Project Name</label>
+      <input type="text" name="project_name" class="form-control" required>
+    </div>
+
+    <div class="col-md-4">
+      <label for="project_date" class="form-label">Project Date</label>
+      <input type="date" name="project_date" class="form-control" required>
+    </div>
+
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">Next</button>
+    </div>
+  </form>
+{% endblock %}
+
+

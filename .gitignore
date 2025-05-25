@@ -1,0 +1,27 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+
+# Flask cache and instance folder
+instance/
+*.db
+*.sqlite3
+
+# Flask debug logs
+*.log
+
+# PyInstaller
+*.spec
+
+# Environment variables / secrets
+.env
+
+# VS Code project files
+.vscode/
+
+# macOS junk
+.DS_Store
