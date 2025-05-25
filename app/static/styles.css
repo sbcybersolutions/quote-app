@@ -1,0 +1,52 @@
+:root {
+  --bs-body-bg:    #F2F2F2;  /* page background */
+  --bs-body-color: #0D0D0D;  /* default text */
+  --bs-primary:    #268EA6;  /* primary buttons, links */
+  --bs-secondary:  #A68A56;  /* secondary buttons, accents */
+  --bs-dark:       #595959;  /* borders, form controls */
+  --bs-light:      #F2F2F2;  /* card/footer backgrounds */
+}
+
+/* Base page colors */
+body {
+  background-color: var(--bs-body-bg);
+  color:            var(--bs-body-color);
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--bs-primary);
+  border-color:     var(--bs-primary);
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--bs-primary);
+  border-color:     var(--bs-primary);
+}
+
+.btn-secondary {
+  background-color: var(--bs-secondary);
+  border-color:     var(--bs-secondary);
+}
+.btn-secondary:hover,
+.btn-secondary:focus {
+  background-color: var(--bs-secondary);
+  border-color:     var(--bs-secondary);
+}
+
+/* Form controls */
+.form-control {
+  border-color: var(--bs-dark);
+}
+
+/* Table headers (if you use tables) */
+.table thead {
+  background-color: var(--bs-primary);
+  color:            var(--bs-light);
+}
+
+/* Cards (if you use cards) */
+.card {
+  background-color: var(--bs-light);
+  color:            var(--bs-body-color);
+}
