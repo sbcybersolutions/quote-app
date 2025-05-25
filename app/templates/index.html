@@ -3,22 +3,53 @@
 {% block title %}Start a Quote{% endblock %}
 
 {% block content %}
+
+  {# show validation errors #}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="alert alert-{{ category }} mt-2">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
   <h1 class="mb-4">Start a New Quote</h1>
 
   <form method="POST" class="row g-3">
     <div class="col-md-6">
       <label for="client_name" class="form-label">Client Name</label>
-      <input type="text" name="client_name" class="form-control" required>
+      <input
+        id="client_name"
+        name="client_name"
+        type="text"
+        class="form-control"
+        required
+        value="{{ client_name or '' }}"
+      >
     </div>
 
     <div class="col-md-6">
       <label for="project_name" class="form-label">Project Name</label>
-      <input type="text" name="project_name" class="form-control" required>
+      <input
+        id="project_name"
+        name="project_name"
+        type="text"
+        class="form-control"
+        required
+        value="{{ project_name or '' }}"
+      >
     </div>
 
     <div class="col-md-4">
       <label for="project_date" class="form-label">Project Date</label>
-      <input type="date" name="project_date" class="form-control" required>
+      <input
+        id="project_date"
+        name="project_date"
+        type="date"
+        class="form-control"
+        required
+        value="{{ project_date or '' }}"
+      >
     </div>
 
     <div class="col-12">
@@ -26,5 +57,3 @@
     </div>
   </form>
 {% endblock %}
-
-
