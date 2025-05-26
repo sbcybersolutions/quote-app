@@ -1,4 +1,3 @@
-import io
 from flask import (
     Blueprint, render_template, request, redirect, url_for, flash,
     send_file, make_response
@@ -6,8 +5,7 @@ from flask import (
 from .models import Quote
 from . import db
 from datetime import datetime
-import xlsxwriter
-import pdfkit
+import io, xlsxwriter, pdfkit
 
 main = Blueprint('main', __name__)
 
@@ -130,3 +128,8 @@ def export_quote_pdf(quote_id):
         'Content-Disposition'
     ] = f'attachment; filename=quote_{quote.id}.pdf'
     return response
+
+@main.route('/quotes')
+def quote_list():
+    quotes = Quote.query.order_by(Quote.created_at.desc()).all()
+    return render_template('quotes.html', quotes=quotes)
