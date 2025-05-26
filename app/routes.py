@@ -6,6 +6,7 @@ from .models import Quote
 from . import db
 from datetime import datetime
 import io, xlsxwriter, pdfkit
+import shutil
 
 main = Blueprint('main', __name__)
 
@@ -104,31 +105,43 @@ def export_quote_excel(quote_id):
         download_name=f"quote_{quote.id}.xlsx",
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
-
+# Export quote as PDF
 @main.route('/quote/<int:quote_id>/export/pdf')
 def export_quote_pdf(quote_id):
+    # Fetch the quote
     quote = Quote.query.get_or_404(quote_id)
-
-    # Calculate grand total in Python
     grand_total = sum(item.total_cost for item in quote.items)
 
-    # Render HTML template
-    rendered = render_template(
-        'export_quote.html',
-        quote=quote,
-        grand_total=grand_total
-    )
+    # Render HTML
+    rendered = render_template('export_quote.html',
+                               quote=quote,
+                               grand_total=grand_total)
 
-    # Convert to PDF (requires wkhtmltopdf on PATH)
-    pdf = pdfkit.from_string(rendered, False)
+    # Locate wkhtmltopdf on your PATH
+    wk_path = shutil.which('wkhtmltopdf')
+    if not wk_path:
+        raise RuntimeError("wkhtmltopdf executable not found in PATH")
 
-    response = make_response(pdf)
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers[
-        'Content-Disposition'
-    ] = f'attachment; filename=quote_{quote.id}.pdf'
+    # Build pdfkit configuration with the found path
+    config = pdfkit.configuration(wkhtmltopdf=wk_path)
+
+    # Set options to allow local file access and ignore load errors
+    options = {
+        'enable-local-file-access': None,
+        'load-error-handling':     'ignore',
+        'print-media-type':        None
+    }
+
+    # Generate PDF
+    pdf_bytes = pdfkit.from_string(rendered, False, configuration=config, options=options)
+
+    # Send it as a download
+    response = make_response(pdf_bytes)
+    response.headers['Content-Type']        = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename=quote_{quote.id}.pdf'
     return response
 
+# List all quotes
 @main.route('/quotes')
 def quote_list():
     quotes = Quote.query.order_by(Quote.created_at.desc()).all()
