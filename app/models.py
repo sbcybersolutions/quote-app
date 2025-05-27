@@ -6,8 +6,10 @@ class ProjectType(db.Model):
     id   = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
 
-    # backref from Resource: project_type.resources
     resources = db.relationship('Resource', back_populates='project_type')
+
+    def __str__(self):
+        return self.name
 
 
 class Resource(db.Model):
