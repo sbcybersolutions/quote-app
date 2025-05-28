@@ -17,7 +17,7 @@
         </select>
       </div>
 
-      <div class="col-md-2">
+      <div class="col-md-1">
         <label class="form-label">Quantity</label>
         <input type="number" class="form-control" name="quantity" min="1" required>
       </div>
@@ -27,7 +27,7 @@
         <input type="text" class="form-control" name="custom_label" placeholder="e.g., French Translation">
       </div>
 
-      <div class="col-md-1">
+      <div class="col-md-2">
         <label class="form-label">CM Cost</label>
         <input type="text" class="form-control" id="unit_cost" readonly>
       </div>
@@ -54,7 +54,7 @@
           .then(res => res.json())
           .then(data => {
             const unitCost = data.unit_cost;
-            unitCostField.value = `$${unitCost.toFixed(2)}`;
+            unitCostField.value = `$${(unitCost * quantity).toFixed(2)}`;
             totalCostField.value = `$${(unitCost / 0.5 * quantity).toFixed(2)}`;
           });
       }

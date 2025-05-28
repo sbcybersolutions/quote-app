@@ -18,7 +18,7 @@
         <th>Quantity</th>
         <th>Detail</th>
         <th>CM Cost</th>
-        <th>Billing Price</th>
+        <th>Total Cost</th>
       </tr>
     </thead>
     <tbody>
@@ -27,7 +27,7 @@
           <td>{{ item.project_type.name }}</td>
           <td>{{ item.quantity }}</td>
           <td>{{ item.custom_label or '' }}</td>
-          <td>${{ '%.2f'|format(item.unit_cost) }}</td>
+          <td>${{ '%.2f'|format(item.unit_cost * item.quantity) }}</td>
           <td>${{ '%.2f'|format(item.total_cost) }}</td>
         </tr>
       {% endfor %}
