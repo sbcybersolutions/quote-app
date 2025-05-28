@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Add Item to Quote{% endblock %}
+
+{% block content %}
+  <h1 class="mb-3">Add Item to Quote #{{ quote.id }}</h1>
+
+  <form method="post">
+    <div class="mb-3">
+      <label class="form-label">Project Type</label>
+      <select class="form-select" name="project_type" required>
+        <option value="">-- Choose --</option>
+        {% for pt in project_types %}
+          <option value="{{ pt.id }}">{{ pt.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Quantity</label>
+      <input type="number" class="form-control" name="quantity" min="1" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Item</button>
+    <a href="{{ url_for('main.quote_detail', quote_id=quote.id) }}" class="btn btn-secondary">Cancel</a>
+  </form>
+{% endblock %}
