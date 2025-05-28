@@ -12,7 +12,7 @@ def create_app():
     from app.models import ProjectType, Resource, Quote, QuoteItem
 
     # Update QuoteItem total_cost calculation
-    QuoteItem.total_cost = property(lambda self: self.unit_cost / 0.5) # type: ignore
+    QuoteItem.total_cost = property(lambda self: (self.unit_cost / 0.5) * self.quantity) # type: ignore
 
     # Custom admin view for Resource (defined inside create_app)
     class ResourceAdmin(ModelView):
