@@ -23,7 +23,13 @@
     <tbody>
       {% for item in quote.items %}
         <tr>
-          <td>{{ item.project_type.name }}</td>
+          <td>
+            {% if item.custom_label %}
+              {{ item.custom_label }} ({{ item.project_type.name }})
+            {% else %}
+              {{ item.project_type.name }}
+            {% endif %}
+          </td>
           <td>{{ item.quantity }}</td>
           <td>${{ '%.2f'|format(item.unit_cost) }}</td>
           <td>${{ '%.2f'|format(item.total_cost) }}</td>
@@ -38,8 +44,10 @@
     </tfoot>
   </table>
 
+  <a class="btn btn-success" href="{{ url_for('main.add_quote_item', quote_id=quote.id) }}">
+    + Add Item
+  </a>
   <a class="btn btn-primary" href="{{ url_for('main.export_quote_excel', quote_id=quote.id) }}">Export to Excel</a>
   <a class="btn btn-secondary" href="{{ url_for('main.export_quote_pdf', quote_id=quote.id) }}">Export to PDF</a>
   <a class="btn btn-outline-dark" href="{{ url_for('main.quote_list') }}">Back to Quotes</a>
-  <a class="btn btn-success" href="{{ url_for('main.add_quote_item', quote_id=quote.id) }}">Add Item</a>
 {% endblock %}

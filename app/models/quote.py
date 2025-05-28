@@ -17,6 +17,7 @@ class QuoteItem(db.Model):
     id               = db.Column(db.Integer, primary_key=True)
     quote_id         = db.Column(db.Integer, db.ForeignKey('quote.id', ondelete='CASCADE'), nullable=False)
     project_type_id  = db.Column(db.Integer, db.ForeignKey('project_type.id', ondelete='RESTRICT'), nullable=False)
+    custom_label = db.Column(db.String(100), nullable=True)
     quantity         = db.Column(db.Integer, nullable=False, default=1)
 
     quote        = db.relationship('Quote', back_populates='items')

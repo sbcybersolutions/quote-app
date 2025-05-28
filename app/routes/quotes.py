@@ -23,6 +23,7 @@ def add_quote_item(quote_id: int):
     if request.method == 'POST':
         project_type_id: str = request.form.get('project_type', '').strip()
         quantity: int = request.form.get('quantity', type=int) # type: ignore
+        custom_label = request.form.get('custom_label', '').strip()
 
         if not project_type_id or not quantity or quantity <= 0:
             flash('Please select a project type and enter a valid quantity.', 'danger')
@@ -31,7 +32,8 @@ def add_quote_item(quote_id: int):
         item = QuoteItem(
             quote_id=quote.id, # type: ignore
             project_type_id=int(project_type_id), # type: ignore # type: ignore
-            quantity=quantity # type: ignore
+            quantity=quantity, # type: ignore
+            custom_label=custom_label # type: ignore
         )
         db.session.add(item)
         db.session.commit()
