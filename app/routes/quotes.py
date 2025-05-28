@@ -2,6 +2,7 @@ from flask import render_template, request, redirect, url_for, flash
 from app.models import Quote, QuoteItem, ProjectType
 from app import db
 from . import main
+from flask import jsonify
 
 @main.route('/quotes')
 def quote_list():
@@ -41,3 +42,11 @@ def add_quote_item(quote_id: int):
         return redirect(url_for('main.quote_detail', quote_id=quote.id))
 
     return render_template('add_item.html', quote=quote, project_types=project_types)
+
+# Dynamically update item cost route
+@main.route('/project-type/<int:project_type_id>/unit-cost')
+def get_unit_cost(project_type_id):
+    from app.models import ProjectType
+    pt = ProjectType.query.get_or_404(project_type_id)
+    unit_cost = sum(r.hours_per_unit * r.rate_per_hour for r in pt.resources)
+    return jsonify({'unit_cost': round(unit_cost, 2)})

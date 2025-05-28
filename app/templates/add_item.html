@@ -23,19 +23,45 @@
       </div>
 
       <div class="col-md-4">
-        <label class="form-label">Custom Label</label>
+        <label class="form-label">Detail</label>
         <input type="text" class="form-control" name="custom_label" placeholder="e.g., French Translation">
       </div>
 
       <div class="col-md-1">
-        <label class="form-label">Unit</label>
-        <input type="text" class="form-control" disabled value="Auto">
+        <label class="form-label">CM Cost</label>
+        <input type="text" class="form-control" id="unit_cost" readonly>
       </div>
 
       <div class="col-md-2">
-        <label class="form-label">Total</label>
-        <input type="text" class="form-control" disabled value="Auto">
+        <label class="form-label">Billing Price</label>
+        <input type="text" class="form-control" id="total_cost" readonly>
       </div>
+
+      <!--Javascript to calculate costs-->
+      <script>
+        const projectSelect = document.querySelector('[name="project_type"]');
+        const quantityInput = document.querySelector('[name="quantity"]');
+        const unitCostField = document.getElementById('unit_cost');
+        const totalCostField = document.getElementById('total_cost');
+
+        function updateCosts() {
+          const projectTypeId = projectSelect.value;
+          const quantity = parseInt(quantityInput.value) || 0;
+
+        if (!projectTypeId) return;
+
+        fetch(`/project-type/${projectTypeId}/unit-cost`)
+          .then(res => res.json())
+          .then(data => {
+            const unitCost = data.unit_cost;
+            unitCostField.value = `$${unitCost.toFixed(2)}`;
+            totalCostField.value = `$${(unitCost / 0.5 * quantity).toFixed(2)}`;
+          });
+      }
+
+        projectSelect.addEventListener('change', updateCosts);
+        quantityInput.addEventListener('input', updateCosts);
+</script>
     </div>
 
     <button type="submit" class="btn btn-primary">Add Item</button>
