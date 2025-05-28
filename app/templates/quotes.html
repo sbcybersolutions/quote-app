@@ -21,7 +21,11 @@
         <tr>
           <td>{{ q.id }}</td>
           <td>{{ q.client_name }}</td>
-          <td>{{ q.project_name }}</td>
+          <td>
+            <a href="{{ url_for('main.quote_detail', quote_id=q.id) }}">
+              {{ q.project_name }}
+            </a>
+          </td>
           <td>{{ q.project_date.strftime('%Y-%m-%d') }}</td>
           <td>{{ q.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
           <td>
@@ -33,9 +37,13 @@
               class="btn btn-sm btn-secondary"
               href="{{ url_for('main.export_quote_pdf', quote_id=q.id) }}"
             >PDF</a>
+            <a
+              class="btn btn-sm btn-outline-dark"
+              href="{{ url_for('main.quote_detail', quote_id=q.id) }}"
+            >Details</a>
           </td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
-{% endblock %}
+{% endblock %}78+
