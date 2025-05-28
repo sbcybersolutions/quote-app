@@ -32,18 +32,20 @@ def index():
             )
 
         quote = Quote(
-            client_name=client_name,
-            project_name=project_name,
-            project_date=project_date
+            client_name=client_name, # type: ignore
+            project_name=project_name, # type: ignore
+            project_date=project_date # type: ignore
         )
         db.session.add(quote)
         db.session.commit()
 
-        return redirect(url_for('main.confirmation', client=client_name))
+        return redirect(url_for('main.confirmation', client=client_name, quote_id=quote.id))
 
     return render_template('index.html')
 
 @main.route('/confirmation')
 def confirmation():
     client = request.args.get('client', '')
-    return render_template('confirmation.html', client=client)
+    quote_id = request.args.get('quote_id', type=int)
+    return render_template('confirmation.html', client=client, quote_id=quote_id)
+
