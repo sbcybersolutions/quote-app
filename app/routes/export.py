@@ -20,14 +20,14 @@ def export_quote_excel(quote_id):
     ws.write_row(3, 0, ["Project Date", quote.project_date.strftime("%Y-%m-%d")])
     ws.write_row(4, 0, ["Created At", quote.created_at.strftime("%Y-%m-%d %H:%M:%S")])
 
-    headers = ["Project Type", "Quantity", "Unit Cost", "Total Cost"]
+    headers = ["Project Label", "Quantity", "Unit Cost", "Total Cost"]
     start_row = 6
     for col, h in enumerate(headers):
         ws.write(start_row, col, h)
 
     for i, item in enumerate(quote.items, start=1):
         row = start_row + i
-        ws.write(row, 0, item.project_type.name)
+        ws.write(row, 0, item.label)
         ws.write(row, 1, item.quantity)
         ws.write(row, 2, item.unit_cost)
         ws.write(row, 3, item.total_cost)

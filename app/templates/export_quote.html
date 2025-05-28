@@ -23,7 +23,7 @@
     <tbody>
       {% for item in quote.items %}
         <tr>
-          <td>{{ item.project_type.name }}</td>
+          <td>{{ item.label }}</td>
           <td>{{ item.quantity }}</td>
           <td>${{ '%.2f'|format(item.unit_cost) }}</td>
           <td>${{ '%.2f'|format(item.total_cost) }}</td>

@@ -30,3 +30,6 @@ class QuoteItem(db.Model):
     @property
     def total_cost(self):
         return self.unit_cost * self.quantity
+    @property
+    def label(self):
+        return self.custom_label or self.project_type.name
