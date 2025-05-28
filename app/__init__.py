@@ -4,52 +4,48 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
-# Initialize SQLAlchemy
+# Initialize the database
 db = SQLAlchemy()
 
-# Import ProjectType for use in the custom ResourceAdmin
-from .models import ProjectType
-
-# Custom admin view for Resource: use the relationship field and make it required
-class ResourceAdmin(ModelView):
-    form_columns = ['name', 'hours_per_unit', 'rate_per_hour', 'project_type']
-    form_args = {
-        'project_type': {
-            'query_factory': lambda: ProjectType.query,
-            'allow_blank': False
-        }
-    }
-
+# Import the model before using in lambda
 def create_app():
+    from app.models import ProjectType, Resource, Quote, QuoteItem
+
+    # Custom admin view for Resource (defined inside create_app)
+    class ResourceAdmin(ModelView):
+        form_columns = ['name', 'hours_per_unit', 'rate_per_hour', 'project_type']
+        form_args = {
+            'project_type': {
+                'query_factory': lambda: ProjectType.query,
+                'allow_blank': False
+            }
+        }
+
     app = Flask(__name__, instance_relative_config=False)
     app.config['SECRET_KEY'] = 'your-secret-key'
 
-    # Build absolute path to quotes.db in project root
-    basedir      = os.path.abspath(os.path.dirname(__file__))
-    project_root = os.path.abspath(os.path.join(basedir, '..'))
-    db_path      = os.path.join(project_root, 'quotes.db')
-
-    app.config['SQLALCHEMY_DATABASE_URI']      = f'sqlite:///{db_path}'
+    # Absolute path to SQLite DB
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    db_path = os.path.join(os.path.abspath(os.path.join(basedir, '..')), 'quotes.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # Initialize SQLAlchemy
+    # Init DB
     db.init_app(app)
 
-    # Import models & create tables
+    # Import models before creating tables
     with app.app_context():
-        from .models import Quote, ProjectType, Resource, QuoteItem  # noqa: F401
         db.create_all()
 
-    # Set up Flask-Admin, using ResourceAdmin for Resources
+    # Set up admin interface
     admin = Admin(app, name='Quote Admin', template_mode='bootstrap3')
-    from .models import ProjectType, Resource, Quote, QuoteItem
     admin.add_view(ModelView(ProjectType, db.session))
     admin.add_view(ResourceAdmin(Resource, db.session))
     admin.add_view(ModelView(Quote, db.session))
     admin.add_view(ModelView(QuoteItem, db.session))
 
-    # Register main blueprint
-    from .routes import main
-    app.register_blueprint(main)
+    # Register blueprint with modular routes
+    from app.routes import main as routes_blueprint
+    app.register_blueprint(routes_blueprint)
 
     return app
