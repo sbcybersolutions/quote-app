@@ -17,12 +17,15 @@ def create_app():
     # Custom admin view for Resource (defined inside create_app)
     class ResourceAdmin(ModelView):
         form_columns = ['name', 'hours_per_unit', 'rate_per_hour', 'project_type']
+        column_filters = ['project_type']
+
         form_args = {
             'project_type': {
                 'query_factory': lambda: ProjectType.query,
                 'allow_blank': False
-            }
         }
+    }
+
 
     app = Flask(__name__, instance_relative_config=False)
     app.config['SECRET_KEY'] = 'your-secret-key'
