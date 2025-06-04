@@ -17,54 +17,68 @@
         </select>
       </div>
 
-      <div class="col-md-1">
+      <div class="col-md-2">
         <label class="form-label">Quantity</label>
         <input type="number" class="form-control" name="quantity" min="1" required>
       </div>
 
-      <div class="col-md-4">
+      <div class="col-md-3">
         <label class="form-label">Detail</label>
-        <input type="text" class="form-control" name="custom_label" placeholder="e.g., French Translation">
+        <input type="text" class="form-control" name="custom_label" placeholder="Optional description">
       </div>
 
-      <div class="col-md-2">
-        <label class="form-label">CM Cost</label>
+      <div class="col-md-2" id="video-field" style="display: none;">
+        <label class="form-label">Video Length (seconds)</label>
+        <input type="number" class="form-control" name="video_seconds" min="0">
+      </div>
+
+      <div class="col-md-1">
+        <label class="form-label">Unit</label>
         <input type="text" class="form-control" id="unit_cost" readonly>
       </div>
 
-      <div class="col-md-2">
-        <label class="form-label">Billing Price</label>
+      <div class="col-md-1">
+        <label class="form-label">Total</label>
         <input type="text" class="form-control" id="total_cost" readonly>
       </div>
-
-      <!--Javascript to calculate costs-->
-      <script>
-        const projectSelect = document.querySelector('[name="project_type"]');
-        const quantityInput = document.querySelector('[name="quantity"]');
-        const unitCostField = document.getElementById('unit_cost');
-        const totalCostField = document.getElementById('total_cost');
-
-        function updateCosts() {
-          const projectTypeId = projectSelect.value;
-          const quantity = parseInt(quantityInput.value) || 0;
-
-        if (!projectTypeId) return;
-
-        fetch(`/project-type/${projectTypeId}/unit-cost`)
-          .then(res => res.json())
-          .then(data => {
-            const unitCost = data.unit_cost;
-            unitCostField.value = `$${(unitCost * quantity).toFixed(2)}`;
-            totalCostField.value = `$${(unitCost / 0.5 * quantity).toFixed(2)}`;
-          });
-      }
-
-        projectSelect.addEventListener('change', updateCosts);
-        quantityInput.addEventListener('input', updateCosts);
-</script>
     </div>
 
     <button type="submit" class="btn btn-primary">Add Item</button>
     <a href="{{ url_for('main.quote_detail', quote_id=quote.id) }}" class="btn btn-secondary">Cancel</a>
   </form>
+
+  <script>
+    const projectSelect = document.querySelector('[name=\"project_type\"]');
+    const quantityInput = document.querySelector('[name=\"quantity\"]');
+    const unitCostField = document.getElementById('unit_cost');
+    const totalCostField = document.getElementById('total_cost');
+    const videoField = document.getElementById('video-field');
+
+    function updateCosts() {
+      const projectTypeId = projectSelect.value;
+      const quantity = parseInt(quantityInput.value) || 0;
+
+      if (!projectTypeId) return;
+
+      fetch(`/project-type/${projectTypeId}/unit-cost`)
+        .then(res => res.json())
+        .then(data => {
+          const unitCost = data.unit_cost;
+          unitCostField.value = `$${(unitCost * quantity).toFixed(2)}`;
+          totalCostField.value = `$${(unitCost / 0.5 * quantity).toFixed(2)}`;
+        });
+    }
+
+    function toggleVideoField() {
+      videoField.style.display = projectSelect.selectedOptions[0]?.text === "Bespoke Course Video" ? 'block' : 'none';
+    }
+
+    projectSelect.addEventListener('change', () => {
+      updateCosts();
+      toggleVideoField();
+    });
+
+    quantityInput.addEventListener('input', updateCosts);
+    toggleVideoField();
+  </script>
 {% endblock %}
