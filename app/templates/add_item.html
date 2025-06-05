@@ -22,24 +22,21 @@
         <input type="number" class="form-control" name="quantity" min="1" required>
       </div>
 
-      <div class="col-md-3">
+      <div class="col-md-4">
         <label class="form-label">Detail</label>
         <input type="text" class="form-control" name="custom_label" placeholder="Optional description">
       </div>
 
-      <div class="col-md-2" id="video-field" style="display: none;">
-        <label class="form-label">Video Length (seconds)</label>
+      <div class="col-md-3" id="video-options" style="display: none;">
+        <label class="form-label">Video Type</label>
+        <select class="form-select" name="video_type_id">
+          <option value="">-- Choose --</option>
+          {% for vt in video_types %}
+            <option value="{{ vt.id }}">{{ vt.name }}</option>
+          {% endfor %}
+        </select>
+        <label class="form-label mt-2">Video Length (seconds)</label>
         <input type="number" class="form-control" name="video_seconds" min="0">
-      </div>
-
-      <div class="col-md-1">
-        <label class="form-label">Unit</label>
-        <input type="text" class="form-control" id="unit_cost" readonly>
-      </div>
-
-      <div class="col-md-1">
-        <label class="form-label">Total</label>
-        <input type="text" class="form-control" id="total_cost" readonly>
       </div>
     </div>
 
@@ -48,37 +45,15 @@
   </form>
 
   <script>
-    const projectSelect = document.querySelector('[name=\"project_type\"]');
-    const quantityInput = document.querySelector('[name=\"quantity\"]');
-    const unitCostField = document.getElementById('unit_cost');
-    const totalCostField = document.getElementById('total_cost');
-    const videoField = document.getElementById('video-field');
+    const projectTypeSelect = document.querySelector('[name="project_type"]');
+    const videoOptions = document.getElementById('video-options');
 
-    function updateCosts() {
-      const projectTypeId = projectSelect.value;
-      const quantity = parseInt(quantityInput.value) || 0;
-
-      if (!projectTypeId) return;
-
-      fetch(`/project-type/${projectTypeId}/unit-cost`)
-        .then(res => res.json())
-        .then(data => {
-          const unitCost = data.unit_cost;
-          unitCostField.value = `$${(unitCost * quantity).toFixed(2)}`;
-          totalCostField.value = `$${(unitCost / 0.5 * quantity).toFixed(2)}`;
-        });
+    function toggleVideoOptions() {
+      const selectedText = projectTypeSelect.selectedOptions[0]?.text.toLowerCase();
+      videoOptions.style.display = selectedText.includes("video") ? 'block' : 'none';
     }
 
-    function toggleVideoField() {
-      videoField.style.display = projectSelect.selectedOptions[0]?.text === "Bespoke Course Video" ? 'block' : 'none';
-    }
-
-    projectSelect.addEventListener('change', () => {
-      updateCosts();
-      toggleVideoField();
-    });
-
-    quantityInput.addEventListener('input', updateCosts);
-    toggleVideoField();
+    projectTypeSelect.addEventListener('change', toggleVideoOptions);
+    toggleVideoOptions(); // Run on load
   </script>
 {% endblock %}

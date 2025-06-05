@@ -25,6 +25,7 @@ def add_quote_item(quote_id: int):
         project_type_id: str = request.form.get('project_type', '').strip()
         quantity: int = request.form.get('quantity', type=int) # type: ignore
         custom_label = request.form.get('custom_label', '').strip()
+        video_seconds = request.form.get('video_seconds', type=int) # type: ignore
 
         if not project_type_id or not quantity or quantity <= 0:
             flash('Please select a project type and enter a valid quantity.', 'danger')
@@ -34,7 +35,8 @@ def add_quote_item(quote_id: int):
             quote_id=quote.id, # type: ignore
             project_type_id=int(project_type_id), # type: ignore # type: ignore
             quantity=quantity, # type: ignore
-            custom_label=custom_label # type: ignore
+            custom_label=custom_label, # type: ignore
+            video_seconds=video_seconds if video_seconds is not None else None # type: ignore
         )
         db.session.add(item)
         db.session.commit()
@@ -46,7 +48,12 @@ def add_quote_item(quote_id: int):
 # Dynamically update item cost route
 @main.route('/project-type/<int:project_type_id>/unit-cost')
 def get_unit_cost(project_type_id):
-    from app.models import ProjectType
     pt = ProjectType.query.get_or_404(project_type_id)
+
+    # Handle Bespoke Course Video
+    if pt.name.strip().lower() == "bespoke course video":
+        return jsonify({'unit_cost': 1200})  # default per-minute rate for display only
+
+    # Otherwise use resource-based calculation
     unit_cost = sum(r.hours_per_unit * r.rate_per_hour for r in pt.resources)
     return jsonify({'unit_cost': round(unit_cost, 2)})
