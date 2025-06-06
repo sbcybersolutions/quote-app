@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, url_for, flash, jsonify
-from app.models import Quote, QuoteItem, ProjectType, video_type
+from app.models import Quote, QuoteItem, ProjectType, VideoType
 from app import db
 from . import main
 
@@ -17,7 +17,7 @@ def quote_detail(quote_id: int):
 def add_quote_item(quote_id: int):
     quote = Quote.query.get_or_404(quote_id)
     project_types = ProjectType.query.all()
-    video_types = video_type.query.all() # type: ignore
+    video_types = VideoType.query.all() # type: ignore
 
     if request.method == 'POST':
         project_type_id = request.form.get('project_type', '').strip()
